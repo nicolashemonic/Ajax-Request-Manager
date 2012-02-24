@@ -1,4 +1,5 @@
 /*
+* Creator: Nicolas Hemonic - France
 * Class to manage a queue of calling sequence.
 * @param queue: {Object} for one call or [Array] of objects for calling sequence.
 * { url: [string], data: [data], callback: [function], dataCallback: [data], errorCallback: [function] }
