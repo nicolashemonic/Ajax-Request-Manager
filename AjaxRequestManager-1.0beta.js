@@ -25,6 +25,9 @@ function Get(queue, params) {
 
     if (typeof params === 'object') {
         $.extend(this._params, params);
+        // #todo
+        // $.ajaxSetup(params);
+        // attention les options par défaut seront modifiés pour toutes requetes
     }
 }
 
