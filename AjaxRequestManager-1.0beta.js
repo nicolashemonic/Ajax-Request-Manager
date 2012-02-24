@@ -1,5 +1,5 @@
 /*
-* Creator: Nicolas Hemonic - France
+* Author: Nicolas Hemonic - France
 * Class to manage a queue of calling sequence.
 * @param queue: {Object} for one call or [Array] of objects for calling sequence.
 * { url: [string], data: [data], callback: [function], dataCallback: [data], errorCallback: [function] }
@@ -40,11 +40,11 @@ Get.prototype.manage = function () {
     }
 
     this._call();
-}
+};
 
 Get.prototype.remainingRequests = function () {
     return this._numberRequests - this._indexOfRequest;
-}
+};
 
 /* Private methods */
 Get.prototype._next = function () {
@@ -56,7 +56,7 @@ Get.prototype._next = function () {
 
         this._call();
     }
-}
+};
 
 Get.prototype._call = function () {
     var that = this;
@@ -95,4 +95,4 @@ Get.prototype._call = function () {
             that._next();
         }
     });
-}
+};

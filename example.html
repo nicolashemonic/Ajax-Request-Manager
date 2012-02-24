@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ajax Request Manager - Examples</title>
+
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.js"></script>
+        <script type="text/javascript" src="AjaxRequestManager-1.0beta.js"></script>
+
+        <script type="text/javascript">
+            /* simple example with one request */
+            var myGet = new Get({
+                url: 'url',
+                data: null,
+                callback: null,
+                dataCallback: null,
+                errorCallback: null,
+                errorDataCallback: null
+            });
+            myGet.manage();
+
+            /* simple example with two requests */
+            var myGets = new Get([
+                {
+                    url: 'url',
+                    data: null,
+                    callback: null,
+                    dataCallback: null,
+                    errorCallback: null,
+                    errorDataCallback: null
+                },
+                {
+                    url: 'url',
+                    data: null,
+                    callback: null,
+                    dataCallback: null,
+                    errorCallback: null,
+                    errorDataCallback: null
+                }
+            ]);
+            myGets.manage();
+
+            /* simple example with one request and params */
+            var myGetWithParams = new Get({
+                url: 'url',
+                data: null,
+                callback: null,
+                dataCallback: null,
+                errorCallback: null,
+                errorDataCallback: null
+            },
+            {
+                type: 'get',
+                dataType: 'text'
+            });
+            myGetWithParams.manage();
+
+            /* simple example with two requests and params */
+            var myGetsWithParams = new Get([
+                {
+                    url: 'url',
+                    data: null,
+                    callback: null,
+                    dataCallback: null,
+                    errorCallback: null,
+                    errorDataCallback: null
+                },
+                {
+                    url: 'url',
+                    data: null,
+                    callback: null,
+                    dataCallback: null,
+                    errorCallback: null,
+                    errorDataCallback: null
+                }
+            ],
+            {
+                type: 'get',
+                dataType: 'text'
+            });
+            myGetsWithParams.manage();
+        </script>
+    </head>
+    <body>
+        <h1>Ajax Request Mananer - Examples</h1>
+        <p>See at the top of document in javascript marker.</p>
+    </body>
+</html>
