@@ -7,77 +7,68 @@
         <script type="text/javascript" src="AjaxRequestManager-1.0beta.js"></script>
 
         <script type="text/javascript">
-            /* simple example with one request */
-            var myGet = new Get({
-                url: 'url',
-                data: null,
-                callback: null,
-                dataCallback: null,
-                errorCallback: null,
-                errorDataCallback: null
-            });
-            myGet.manage();
+            var myData, myCallback, myDataCallback, myErrorCallback, myErrorDataCallback;
 
-            /* simple example with two requests */
-            var myGets = new Get([
+            /*
+            * simple example with one request
+            * all parameters are optional except for the url
+            */
+            var myAjaxRequest = new AjaxRequest({
+                url: '/my/request/url',
+                type: 'post',
+                data: myData,
+                dataType: 'text',
+                callback: myCallback, /* callback of success | callback(dataServer, dataCallback); */
+                dataCallback: myDataCallback, /* data of success callback */
+                errorCallback: myErrorCallback, /* callback of error | errorCallback(dataServer, errorDataCallback); */
+                errorDataCallback: myErrorDataCallback /* data of error callback */
+            });
+            myAjaxRequest.manage();
+
+
+            /*
+            * simple example with two requests
+            * all parameters are optional except for the url
+            */
+            var myAjaxRequests = new AjaxRequest([
                 {
-                    url: 'url',
-                    data: null,
-                    callback: null,
-                    dataCallback: null,
-                    errorCallback: null,
-                    errorDataCallback: null
+                    url: 'my/request/url',
+                    traditional: 'get'
                 },
                 {
-                    url: 'url',
-                    data: null,
-                    callback: null,
-                    dataCallback: null,
-                    errorCallback: null,
-                    errorDataCallback: null
+                    url: 'another/request/url',
+                    data: myData
                 }
             ]);
-            myGets.manage();
+            myAjaxRequests.manage();
 
-            /* simple example with one request and params */
-            var myGetWithParams = new Get({
-                url: 'url',
-                data: null,
-                callback: null,
-                dataCallback: null,
-                errorCallback: null,
-                errorDataCallback: null
-            },
-            {
-                type: 'get',
-                dataType: 'text'
-            });
-            myGetWithParams.manage();
 
-            /* simple example with two requests and params */
-            var myGetsWithParams = new Get([
+            /*
+             * example with two requests and remaining
+             * all parameters are optional except for the url
+             */
+
+            /* initialize the queue of ajax requests */
+            var myAjaxRequests = new AjaxRequest([
                 {
-                    url: 'url',
-                    data: null,
-                    callback: null,
-                    dataCallback: null,
-                    errorCallback: null,
-                    errorDataCallback: null
+                    url: 'my/request/url',
+                    traditional: 'get'
                 },
                 {
-                    url: 'url',
-                    data: null,
-                    callback: null,
-                    dataCallback: null,
-                    errorCallback: null,
-                    errorDataCallback: null
+                    url: 'another/request/url',
+                    data: myData
                 }
-            ],
-            {
-                type: 'get',
-                dataType: 'text'
-            });
-            myGetsWithParams.manage();
+            ]);
+
+            /* do something [...] */
+
+            /* manage the queue (start ajax requests) */
+            myAjaxRequests.manage();
+
+            /* do something [...] */
+
+            /* verify the remaining requests in queue */
+            alert('return number of remaining requests: ' + myAjaxRequest.remainingRequests());
         </script>
     </head>
     <body>

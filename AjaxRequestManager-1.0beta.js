@@ -1,19 +1,42 @@
-/*
-* Author: Nicolas Hemonic - France
-* Class to manage a queue of calling sequence.
-* @param queue: {Object} for one call or [Array] of objects for calling sequence.
-* { url: [string], data: [data], callback: [function], dataCallback: [data], errorCallback: [function] }
-* @param params: {Object} override default $.ajax options.
-* { type: [string], dataType: [string] }
-*/
+/**
+ * Created by Nicolas Hémonic.
+ * Date: 27/02/12
+ * Time: 16:33
+ * Ajax Request Manager under free licence
+ */
 
-/*
-* #todo: déporter cette fonction à l'intérieur pour limiter sa porté
-* typeOf recognize array when it is, not an object.
-* @param {Var}
-* @return return the type of value
-*/
-var typeOf = function (value) {
+/* Constructor */
+function AjaxRequest(queue) {
+    if (arguments.length !== 1 || (typeof queue !== 'object' && typeof queue !== 'array')) {
+        throw new Error('queue must be an object or array of objects and is required');
+    }
+
+    this.currentQueue = queue;
+    this._numberRequests = null;
+    this._currentRequest = null;
+    this._indexOfRequest = 0;
+}
+
+/* Public methods */
+AjaxRequest.prototype.manage = function () {
+    if (this._typeOf(this.currentQueue) === 'array') {
+        this._numberRequests = this.currentQueue.length;
+        this._currentRequest = this.currentQueue[this._indexOfRequest];
+    }
+    else {
+        this._numberRequests = 1;
+        this._currentRequest = this.currentQueue;
+    }
+
+    this._call();
+};
+
+AjaxRequest.prototype.remainingRequests = function () {
+    return this._numberRequests - this._indexOfRequest;
+};
+
+/* Private methods */
+AjaxRequest.prototype._typeOf = function (value) {
     var s = typeof value;
     if (s === 'object') {
         if (value) {
@@ -29,95 +52,57 @@ var typeOf = function (value) {
     return s;
 };
 
-/* Constructor */
-function Get(queue, params) {
-    if (arguments.length == 0 || (typeof queue !== 'object' && typeof queue !== 'array')) {
-        throw new Error('Get(queue, params): queue must be an object or array and is required');
-    }
-
-    if (arguments.length == 2 && typeof params !== 'object') {
-        throw new Error('Get(queue, params): params must be an object');
-    }
-
-    this.currentQueue = queue;
-    this._numberRequests = null;
-    this._currentRequest = null;
-    this._indexOfRequest = 0;
-    this._params = { type: 'post', dataType: 'json', traditional: false };
-
-    if (typeof params === 'object') {
-        $.extend(this._params, params);
-        // #todo: gérer les paramètres optionnelles
-        // $.ajaxSetup(params);
-        // attention les options par défaut seront modifiés pour toutes requetes
-    }
-}
-
-/* Public methods */
-Get.prototype.manage = function () {
-    if (typeOf(this.currentQueue) === 'array') {
-        this._numberRequests = this.currentQueue.length;
-        this._currentRequest = this.currentQueue[this._indexOfRequest];
-    }
-    else {
-        this._numberRequests = 1;
-        this._currentRequest = this.currentQueue;
-    }
-
-    this._call();
-};
-
-Get.prototype.remainingRequests = function () {
-    return this._numberRequests - this._indexOfRequest;
-};
-
-/* Private methods */
-Get.prototype._next = function () {
+AjaxRequest.prototype._next = function () {
     this._indexOfRequest++;
 
     if (this._indexOfRequest < this._numberRequests) {
-
         this._currentRequest = this.currentQueue[this._indexOfRequest];
 
         this._call();
     }
 };
 
-Get.prototype._call = function () {
-    var that = this;
+AjaxRequest.prototype._call = function () {
+    var that = this,
+        handler = {};
 
-    $.ajax({
-        url: that._currentRequest.url,
-        type: that._params.type,
-        dataType: that._params.dataType,
-        data: that._currentRequest.data,
-        traditional: that._params.traditional,
-        success: function (dataServer) {
-            if (dataServer.Success) {
-                if (typeof that._currentRequest.callback === 'function') {
-                    that._currentRequest.callback(dataServer.Data, that._currentRequest.dataCallback);
-                }
+    handler.success = function (dataServer, textStatus, jqXHR) {
+        if (dataServer.Success) {
+            if (typeof that._currentRequest.callback === 'function') {
+                that._currentRequest.callback(dataServer.Data, that._currentRequest.dataCallback);
             }
-            else {
-                if (typeof that._currentRequest.errorCallback === 'function') {
-                    that._currentRequest.errorCallback(dataServer.Message, that._currentRequest.errorDataCallback);
-                }
-                else {
-                    alert(dataServer.Message);
-                }
-            }
-
-            that._next();
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            if (typeof that._currentRequest.errorCallback === 'function') {
-                that._currentRequest.errorCallback(errorThrown, that._currentRequest.errorDataCallback);
-            }
-            else {
-                alert(errorThrown);
-            }
-
-            that._next();
         }
-    });
+        else {
+            if (typeof that._currentRequest.errorCallback === 'function') {
+                that._currentRequest.errorCallback(dataServer.Message, that._currentRequest.errorDataCallback);
+            }
+            else {
+                alert(dataServer.Message);
+            }
+        }
+
+        that._next();
+    };
+
+    handler.error = function (jqXHR, textStatus, errorThrown) {
+        if (typeof that._currentRequest.errorCallback === 'function') {
+            that._currentRequest.errorCallback(errorThrown, that._currentRequest.errorDataCallback);
+        }
+        else {
+            alert(errorThrown);
+        }
+
+        that._next();
+    };
+
+    if (typeof this._currentRequest.url !== 'string' || this._currentRequest.url === '') {
+        throw new Error('url parameter must be specified');
+    }
+    else if (typeof jQuery === 'undefined') {
+        throw new Error('jQuery must be loaded');
+    }
+    else {
+        jQuery.extend(handler, that._currentRequest);
+        jQuery.ajax(handler);
+    }
 };
