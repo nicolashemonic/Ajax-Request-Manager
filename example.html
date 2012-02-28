@@ -14,14 +14,15 @@
             * all parameters are optional except for the url
             */
             var myAjaxRequest = new AjaxRequest({
-                url: '/my/request/url',
-                type: 'post',
-                data: myData,
-                dataType: 'text',
-                callback: myCallback, /* callback of success | callback(dataServer, dataCallback); */
-                dataCallback: myDataCallback, /* data of success callback */
-                errorCallback: myErrorCallback, /* callback of error | errorCallback(dataServer, errorDataCallback); */
-                errorDataCallback: myErrorDataCallback /* data of error callback */
+                url: 'http://my/request/url',
+
+                /* callback of success | callback(dataServer, dataCallback); */
+                callback: myCallback,
+                dataCallback: myDataCallback,
+
+                /* callback of error | errorCallback(dataServer, errorDataCallback); */
+                errorCallback: myErrorCallback,
+                errorDataCallback: myErrorDataCallback
             });
             myAjaxRequest.manage();
 
@@ -32,11 +33,11 @@
             */
             var myAjaxRequests = new AjaxRequest([
                 {
-                    url: 'my/request/url',
-                    traditional: 'get'
+                    url: 'http://my/request/url',
+                    type: 'post'
                 },
                 {
-                    url: 'another/request/url',
+                    url: 'http://my/another/request/url',
                     data: myData
                 }
             ]);
@@ -51,11 +52,11 @@
             /* initialize the queue of ajax requests */
             var myAjaxRequests = new AjaxRequest([
                 {
-                    url: 'my/request/url',
-                    traditional: 'get'
+                    url: 'http://my/request/url',
+                    traditional: true
                 },
                 {
-                    url: 'another/request/url',
+                    url: 'http://my/another/request/url',
                     data: myData
                 }
             ]);

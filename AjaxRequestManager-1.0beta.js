@@ -1,4 +1,4 @@
-/**
+/*
  * Created by Nicolas Hémonic.
  * Date: 27/02/12
  * Time: 16:33
@@ -66,34 +66,38 @@ AjaxRequest.prototype._call = function () {
     var that = this,
         handler = {};
 
-    handler.success = function (dataServer, textStatus, jqXHR) {
-        if (dataServer.Success) {
-            if (typeof that._currentRequest.callback === 'function') {
-                that._currentRequest.callback(dataServer.Data, that._currentRequest.dataCallback);
-            }
-        }
-        else {
-            if (typeof that._currentRequest.errorCallback === 'function') {
-                that._currentRequest.errorCallback(dataServer.Message, that._currentRequest.errorDataCallback);
+    if (typeof that._currentRequest.success === 'undefined') {
+        handler.success = function (dataServer, textStatus, jqXHR) {
+            if (dataServer.Success) {
+                if (typeof that._currentRequest.callback === 'function') {
+                    that._currentRequest.callback(dataServer.Data, that._currentRequest.dataCallback);
+                }
             }
             else {
-                alert(dataServer.Message);
+                if (typeof that._currentRequest.errorCallback === 'function') {
+                    that._currentRequest.errorCallback(dataServer.Message, that._currentRequest.errorDataCallback);
+                }
+                else {
+                    alert(dataServer.Message);
+                }
             }
-        }
 
-        that._next();
-    };
+            that._next();
+        };
+    }
 
-    handler.error = function (jqXHR, textStatus, errorThrown) {
-        if (typeof that._currentRequest.errorCallback === 'function') {
-            that._currentRequest.errorCallback(errorThrown, that._currentRequest.errorDataCallback);
-        }
-        else {
-            alert(errorThrown);
-        }
+    if (typeof that._currentRequest.error === 'undefined') {
+        handler.error = function (jqXHR, textStatus, errorThrown) {
+            if (typeof that._currentRequest.errorCallback === 'function') {
+                that._currentRequest.errorCallback(errorThrown, that._currentRequest.errorDataCallback);
+            }
+            else {
+                alert(errorThrown);
+            }
 
-        that._next();
-    };
+            that._next();
+        };
+    }
 
     if (typeof this._currentRequest.url !== 'string' || this._currentRequest.url === '') {
         throw new Error('url parameter must be specified');
