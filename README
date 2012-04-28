@@ -1,4 +1,4 @@
 Name: Ajax Request Manager
 Author: Nicolas Hemonic
 Description: Class to manage a queue of calling sequence
-Dependence: jQuery
+Base: jQuery
